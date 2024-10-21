@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+
+// Define Employee Class
+public class Employee
+{
+    public int ID { get; set; }
+    public string Name { get; set; }
+
+    // Define a delegate
+    public delegate void AddEmployeeDelegate(Employee emp);
+
+    // Constructor
+    public Employee(int id, string name)
+    {
+        ID = id;
+        Name = name;
+    }
+
+    // Method to add the employee using the delegate
+    public void AddEmployee(AddEmployeeDelegate addEmployeeDelegate)
+    {
+        addEmployeeDelegate(this); // Invoke the delegate to add the employee
+    }
+
+    public override string ToString()
+    {
+        return $"Employee ID: {ID}, Name: {Name}";
+    }
+}
+
+// Define Club Class
+public class Club
+{
+    public List<Employee> ClubMembers { get; set; } = new List<Employee>();
+
+    // Method to add employee to the club
+    public void AddToClub(Employee emp)
+    {
+        ClubMembers.Add(emp);
+        Console.WriteLine($"{emp.Name} added to the Club.");
+    }
+}
+
+// Define SocialInsurance Class
+public class SocialInsurance
+{
+    public List<Employee> InsuredEmployees { get; set; } = new List<Employee>();
+
+    // Method to add employee to the social insurance
+    public void AddToInsurance(Employee emp)
+    {
+        InsuredEmployees.Add(emp);
+        Console.WriteLine($"{emp.Name} added to Social Insurance.");
+    }
+}
+
+// Main Program
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // Create instances of Club and SocialInsurance
+        Club club = new Club();
+        SocialInsurance socialInsurance = new SocialInsurance();
+
+        // Create employees
+        Employee employee1 = new Employee(1, "Alice");
+        Employee employee2 = new Employee(2, "Bob");
+
+        // Create a delegate instance and add methods to it
+        Employee.AddEmployeeDelegate addEmployeeDelegate = club.AddToClub;
+        addEmployeeDelegate += socialInsurance.AddToInsurance;
+
+        // Add employee1 and employee2 using the delegate
+        employee1.AddEmployee(addEmployeeDelegate);
+        employee2.AddEmployee(addEmployeeDelegate);
+
+        // Output the club members and insured employees
+        Console.WriteLine("\nClub Members:");
+        foreach (var member in club.ClubMembers)
+        {
+            Console.WriteLine(member);
+        }
+
+        Console.WriteLine("\nInsured Employees:");
+        foreach (var insured in socialInsurance.InsuredEmployees)
+        {
+            Console.WriteLine(insured);
+        }
+    }
+}
